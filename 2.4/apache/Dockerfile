@@ -1,4 +1,4 @@
-FROM php:7.2-apache
+FROM php:7.1-apache
 
 # install the PHP extensions we need
 RUN set -ex; \
@@ -62,8 +62,8 @@ RUN { \
 WORKDIR /var/www/html
 
 #
-ENV ITOP_VERSION 2.4.1
-ENV ITOP_SHA256 4d810f4a13d216b7d1524aa94c7a993845dd636aecb0ba4a9eeedebd58b0b7a5
+ENV ITOP_VERSION 2.4.2
+ENV ITOP_SHA256 c9ab383190c8efeb900d7cf5248a9fefbc80a98a61c7bac049f0b6598b5bc598
 
 RUN curl -fSL "https://github.com/changi67/itop/archive/${ITOP_VERSION}.tar.gz" -o ${ITOP_VERSION}.tar.gz \
 	&& echo "${ITOP_SHA256} *${ITOP_VERSION}.tar.gz" | sha256sum -c - \

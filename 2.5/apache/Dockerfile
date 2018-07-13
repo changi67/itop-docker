@@ -65,10 +65,10 @@ WORKDIR /var/www/html
 ENV ITOP_VERSION 2.5.0
 ENV ITOP_SHA256 87ace1a8bcbdec2137b004ebab01dc09dffa5bdc6e31df990e65bede6b7ce045
 
-RUN curl -fSL "https://github.com/changi67/itop/archive/${ITOP_VERSION}.tar.gz" -o itop.tar.gz \
-	&& echo "${ITOP_SHA256} *itop.tar.gz" | sha256sum -c - \
-	&& tar -xz --strip-components=1 -f itop.tar.gz \
-	&& rm itop.tar.gz \
+RUN curl -fSL "https://github.com/changi67/itop/archive/${ITOP_VERSION}.tar.gz" -o ${ITOP_VERSION}.tar.gz \
+	&& echo "${ITOP_SHA256} *${ITOP_VERSION}.tar.gz" | sha256sum -c - \
+	&& tar -xz --strip-components=1 -f ${ITOP_VERSION}.tar.gz \
+	&& rm ${ITOP_VERSION}.tar.gz \
 	&& chown -R www-data:www-data .
 
 # vim:set ft=dockerfile:
