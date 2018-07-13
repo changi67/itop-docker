@@ -15,6 +15,12 @@ declare -A phpVersions=(
 	[2.4]='7.1'
 )
 
+defaultMcryptVersion='1.0.1'
+declare -A mcryptVersion=(
+	[2.3]='1.0.0'
+	[2.4]='1.0.0'
+)
+
 travisEnv=
 for version in "${versions[@]}"; do
 
@@ -46,6 +52,7 @@ for version in "${versions[@]}"; do
 				set -x
 				sed -r \
 					-e 's/%%PHP_VERSION%%/'"${phpVersions[$version]:-$defaultPhpVersion}"'/' \
+					-e 's/%%MCRYPT_VERSION%%/'"${mcryptVersion[$version]:-$defaultMcryptVersion}"'/' \
 					-e 's/%%VARIANT%%/'"$variant"'/' \
 					-e 's/%%VERSION%%/'"$fullVersion"'/' \
 					-e 's/%%SHA256%%/'"$sha256"'/' \

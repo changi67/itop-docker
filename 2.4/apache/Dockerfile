@@ -42,7 +42,7 @@ RUN set -ex; \
 		| xargs -rt apt-mark manual; \
 	\
 	pecl install apcu; \
-	pecl install mcrypt-1.0.1; \
+	pecl install mcrypt-1.0.0; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	apt-get install -y graphviz libmcrypt4; \
 	docker-php-ext-enable mcrypt apcu; \
