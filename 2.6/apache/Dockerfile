@@ -69,7 +69,7 @@ ENV ITOP_VERSION 2.6.3
 ENV ITOP_VERSION_COMMIT 5092
 ENV ITOP_SHA256 d87205b7040b5e3b31a3c15e8e322dad91372a1421233064e3dc91d4c5c861ca
 
-RUN curl -fSL "https://sourceforge.net/projects/itop/files/itop/${ITOP_VERSION}/iTop-${ITOP_VERSION}-${ITOP_VERSION_COMMIT}.zip/download" -o ${ITOP_VERSION}.zip \
+RUN curl -fsSL "https://sourceforge.net/projects/itop/files/itop/${ITOP_VERSION}/iTop-${ITOP_VERSION}-${ITOP_VERSION_COMMIT}.zip/download" -o ${ITOP_VERSION}.zip \
 	&& echo "${ITOP_SHA256} *${ITOP_VERSION}.zip" | sha256sum -c - \
 	&& unzip ${ITOP_VERSION}.zip \
 	&& rm ${ITOP_VERSION}.zip \

@@ -17,6 +17,9 @@ RUN set -ex; \
 		libxml2-dev \
 		#For CURL
 		libcurl3-dev \
+		#For ZIP
+		libzip-dev \
+		zip \
 	; \
 	\
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
@@ -44,7 +47,7 @@ RUN set -ex; \
 	pecl install apcu; \
 	pecl install mcrypt-%%MCRYPT_VERSION%%; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-	apt-get install -y graphviz libmcrypt4; \
+	apt-get install -y graphviz libmcrypt4 unzip; \
 	docker-php-ext-enable mcrypt apcu; \
 	rm -rf /var/lib/apt/lists/*
 
@@ -59,16 +62,19 @@ RUN { \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
-WORKDIR /var/www/html
+WORKDIR /var/www
 
 #
 ENV ITOP_VERSION %%VERSION%%
+ENV ITOP_VERSION_COMMIT %%COMMIT%%
 ENV ITOP_SHA256 %%SHA256%%
 
-RUN curl -fSL "https://github.com/changi67/itop/archive/${ITOP_VERSION}.tar.gz" -o ${ITOP_VERSION}.tar.gz \
-	&& echo "${ITOP_SHA256} *${ITOP_VERSION}.tar.gz" | sha256sum -c - \
-	&& tar -xz --strip-components=1 -f ${ITOP_VERSION}.tar.gz \
-	&& rm ${ITOP_VERSION}.tar.gz \
-	&& chown -R www-data:www-data .
+RUN curl -fsSL "https://sourceforge.net/projects/itop/files/itop/${ITOP_VERSION}/iTop-${ITOP_VERSION}-${ITOP_VERSION_COMMIT}.zip/download" -o ${ITOP_VERSION}.zip \
+	&& echo "${ITOP_SHA256} *${ITOP_VERSION}.zip" | sha256sum -c - \
+	&& unzip ${ITOP_VERSION}.zip \
+	&& rm ${ITOP_VERSION}.zip \
+	&& rm -rf html \
+	&& mv web html \
+	&& chown -R www-data:www-data html
 
 # vim:set ft=dockerfile:

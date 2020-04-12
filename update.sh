@@ -9,45 +9,78 @@ if [ ${#versions[@]} -eq 0 ]; then
 fi
 versions=( "${versions[@]%/}" )
 
-defaultPhpVersion='7.2'
+defaultPhpVersion='7.4'
 declare -A phpVersions=(
 	[2.3]='7.1'
 	[2.4]='7.1'
+	[2.5]='7.2'
+	[2.6]='7.3'
 )
 
-defaultMcryptVersion='1.0.1'
+defaultMcryptVersion='1.0.3'
 declare -A mcryptVersion=(
 	[2.3]='1.0.0'
 	[2.4]='1.0.0'
+	[2.5]='1.0.1'
+	[2.6]='1.0.2'
 )
 
 travisEnv=
 for version in "${versions[@]}"; do
 
-	listVersion=$(git ls-remote --tags https://github.com/changi67/itop/ | awk -F'/' '{print $3}' | egrep -v '(@|-)' | egrep -v '^(0|1)')
+	listVersion=$(git ls-remote --tags https://github.com/Combodo/iTop/ | awk -F'/' '{print $3}' | egrep '^[0-9].[0-9].[0-9](-[0-9]+)?$')
 
 	for fullVersion in $listVersion; do
 		major=${version//./}
 		minor=${fullVersion//./}
+		minor=${minor//-/}
 		minor=${minor::(-1)}
+
+		if [ "${fullVersion//./}" == "242" \
+			-o "${fullVersion//./}" == "252" \
+			-o "${fullVersion//./}" == "253" \
+			-o "${fullVersion//./}" == "254" \
+			-o "${fullVersion//./}" == "262" \
+			-o "${fullVersion//./}" == "262-1" \
+			-o "${fullVersion//./}" == "262-2" \
+			]; then
+			continue;
+		fi
+
+		if [ "$minor" -gt "100" ]; then
+			minor=${minor::(-1)}
+		fi
+
 		if [ "$major" -ne "$minor" ]; then
 			echo "$fullVersion not compatible with current version $version";
 			continue;
 		fi
 
-		if [ -f "${version}/${fullVersion}.tar.gz.sha256sum" ]; then
-			sha256=$(cat ${version}/${fullVersion}.tar.gz.sha256sum);
+		link=$(curl -fSsl "https://sourceforge.net/projects/itop/rss?path=/itop/${fullVersion}" | egrep 'link.*zip')
+		link=${link//<link>/}
+		link=${link//<\/link>/}
+		commit=$(echo $link | gawk 'match($0, /([0-9]+)\.zip/, arr) { print arr[1]}')
+		if [ -f "${version}/${fullVersion}.zip.sha256sum" ]; then
+			sha256=$(cat ${version}/${fullVersion}.zip.sha256sum);
 		else
-			curl -fSL "https://github.com/changi67/itop/archive/${fullVersion}.tar.gz" -o ${fullVersion}.tar.gz
-			sha256=$(sha256sum ${fullVersion}.tar.gz | awk '{print $1}')
-			echo $sha256 > ${version}/${fullVersion}.tar.gz.sha256sum
-			rm ${fullVersion}.tar.gz
+			curl -fsSL $link -o ${fullVersion}.zip
+			sha256=$(sha256sum ${fullVersion}.zip | awk '{print $1}')
+			echo $sha256 > ${version}/${fullVersion}.zip.sha256sum
+			rm ${fullVersion}.zip
 		fi
 
 
 		#for variant in fpm apache; do
 		for variant in apache; do
+			if ! [ -d "$variant" ]; then
+				mkdir -p $version/$variant
+			fi
 			dist='debian'
+			if [ "$minor" -gt "26"  ]; then
+				template="Dockerfile-$dist.php74.template"
+			else
+				template="Dockerfile-$dist.template"
+			fi
 			(
 				set -x
 				sed -r \
@@ -55,8 +88,9 @@ for version in "${versions[@]}"; do
 					-e 's/%%MCRYPT_VERSION%%/'"${mcryptVersion[$version]:-$defaultMcryptVersion}"'/' \
 					-e 's/%%VARIANT%%/'"$variant"'/' \
 					-e 's/%%VERSION%%/'"$fullVersion"'/' \
+					-e 's/%%COMMIT%%/'"$commit"'/' \
 					-e 's/%%SHA256%%/'"$sha256"'/' \
-				"./Dockerfile-$dist.template" > "$version/$variant/Dockerfile"
+				"./$template" > "$version/$variant/Dockerfile"
 			)
 
 			travisEnv='\n  - VERSION='"$version"' VARIANT='"$variant$travisEnv"
