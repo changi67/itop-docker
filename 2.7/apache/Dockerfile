@@ -23,7 +23,6 @@ RUN set -ex; \
 		zip \
 	; \
 	\
-	#docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
 	docker-php-ext-configure gd --with-freetype --with-jpeg; \
 	docker-php-ext-install -j "$(nproc)" \
 		gd \
