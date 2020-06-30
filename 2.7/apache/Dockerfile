@@ -74,7 +74,7 @@ RUN curl -fsSL "https://github.com/Combodo/iTop/archive/${ITOP_VERSION}.zip" -o 
 	&& unzip ${ITOP_VERSION}.zip \
 	&& rm ${ITOP_VERSION}.zip \
 	&& rm -rf html \
-	&& mv web html \
+	&& mv iTop-${ITOP_VERSION} html \
 	&& chown -R www-data:www-data html
 
 # vim:set ft=dockerfile:
