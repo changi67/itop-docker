@@ -37,9 +37,15 @@ for version in "${versions[@]}"; do
 		minor=${minor::(-1)}
 
 		if [ "${fullVersion//./}" == "242" \
+			-o "${fullVersion//./}" == "240" \
+			-o "${fullVersion//./}" == "241" \
+			-o "${fullVersion//./}" == "243" \
+			-o "${fullVersion//./}" == "250" \
+			-o "${fullVersion//./}" == "251" \
 			-o "${fullVersion//./}" == "252" \
 			-o "${fullVersion//./}" == "253" \
 			-o "${fullVersion//./}" == "254" \
+			-o "${fullVersion//./}" == "260" \
 			-o "${fullVersion//./}" == "262" \
 			-o "${fullVersion//./}" == "262-1" \
 			-o "${fullVersion//./}" == "262-2" \
@@ -56,10 +62,7 @@ for version in "${versions[@]}"; do
 			continue;
 		fi
 
-		link=$(curl -fSsl "https://sourceforge.net/projects/itop/rss?path=/itop/${fullVersion}" | egrep 'link.*zip')
-		link=${link//<link>/}
-		link=${link//<\/link>/}
-		commit=$(echo $link | gawk 'match($0, /([0-9]+)\.zip/, arr) { print arr[1]}')
+		link="https://github.com/Combodo/iTop/archive/$fullVersion.zip"
 		if [ -f "${version}/${fullVersion}.zip.sha256sum" ]; then
 			sha256=$(cat ${version}/${fullVersion}.zip.sha256sum);
 		else
@@ -88,7 +91,6 @@ for version in "${versions[@]}"; do
 					-e 's/%%MCRYPT_VERSION%%/'"${mcryptVersion[$version]:-$defaultMcryptVersion}"'/' \
 					-e 's/%%VARIANT%%/'"$variant"'/' \
 					-e 's/%%VERSION%%/'"$fullVersion"'/' \
-					-e 's/%%COMMIT%%/'"$commit"'/' \
 					-e 's/%%SHA256%%/'"$sha256"'/' \
 				"./$template" > "$version/$variant/Dockerfile"
 			)
