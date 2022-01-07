@@ -6,6 +6,16 @@ env:
   - VERSION=2.7 VARIANT=apache
   - VERSION=2.7 VARIANT=apache
   - VERSION=2.7 VARIANT=apache
+  - VERSION=2.7 VARIANT=apache
+  - VERSION=2.7 VARIANT=apache
+  - VERSION=2.7 VARIANT=apache
+  - VERSION=2.7 VARIANT=apache
+  - VERSION=2.7 VARIANT=apache
+  - VERSION=2.7 VARIANT=apache
+  - VERSION=2.7 VARIANT=apache
+  - VERSION=2.7 VARIANT=apache
+  - VERSION=2.7 VARIANT=apache
+  - VERSION=2.7 VARIANT=apache
   - VERSION=2.6 VARIANT=apache
   - VERSION=2.6 VARIANT=apache
   - VERSION=2.6 VARIANT=apache

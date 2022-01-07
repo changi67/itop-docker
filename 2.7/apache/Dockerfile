@@ -66,8 +66,8 @@ RUN { \
 WORKDIR /var/www
 
 #
-ENV ITOP_VERSION 2.7.1
-ENV ITOP_SHA256 bc3c44bcbe089b97557e92c3b8cb2f000e4777276183632885f1510db977b393
+ENV ITOP_VERSION 2.7.6
+ENV ITOP_SHA256 fba0eaf0a9ee20709bd8f4d07cecf8078ebd4535ac5b49b6c2196bb3daa85c09
 
 RUN curl -fsSL "https://github.com/Combodo/iTop/archive/${ITOP_VERSION}.zip" -o ${ITOP_VERSION}.zip \
 	&& echo "${ITOP_SHA256} *${ITOP_VERSION}.zip" | sha256sum -c - \
